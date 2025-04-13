@@ -158,8 +158,6 @@ if(!(strcmp(line,"cp") && strcmp(line,"touch") && strcmp(line,"mkdir") && strcmp
 pid_t pid;
 posix_spawnattr_t attr;
 posix_spawnattr_init(&attr);
-if(!(strcmp(line,"cp") && strcmp(line,"touch") && strcmp(line,"mkdir") && strcmp(line,"chmod") && strcmp(line,"diff"))){
-posix_spawnattr_setflags(&attr, POSIX_SPAWN_SETSCHEDULER);}
 if(posix_spawnp(&pid, "echo", NULL, &attr, argv, environ) != 0){
 perror("spawn failed");
 exit(EXIT_FAILURE);}
