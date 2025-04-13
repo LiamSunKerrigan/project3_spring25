@@ -158,7 +158,7 @@ if(!(strcmp(line,"cp") && strcmp(line,"touch") && strcmp(line,"mkdir") && strcmp
 pid_t pid;
 posix_spawnattr_t attr;
 posix_spawnattr_init(&attr);
-if(posix_spawnp(&pid, "echo", NULL, &attr, argv, environ) != 0){
+if(posix_spawnp(&pid, *argv, NULL, &attr, argv, environ) != 0){
 perror("spawn failed");
 exit(EXIT_FAILURE);}
 int status;
