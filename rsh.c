@@ -145,7 +145,10 @@ fprintf(stderr, "rsh>");
 char line[256];
 if(!fgets(line, sizeof line, stdin) || !strcmp(line, "\n")){
 continue;}
-line[strlen(line) - 1] = ' ';
+char *end = line + strlen(line);
+*--end = ' ';
+if(*--end == ' '){
+end[1] = 0;}
 
 char *argv[20];
 char **argPtr = argv;
@@ -158,21 +161,21 @@ if(!(strcmp(line,"cp") && strcmp(line,"touch") && strcmp(line,"mkdir") && strcmp
 pid_t pid;
 posix_spawnattr_t attr;
 posix_spawnattr_init(&attr);
-if(posix_spawnp(&pid, *argv, NULL, &attr, argv, environ) != 0);
-
-
+if(posix_spawnp(&pid, *argv, NULL, &attr, argv, environ) != 0){
+perror("spawn failed");
+exit(EXIT_FAILURE);}
 int status;
-if(waitpid(pid, &status, 0) == -1);
-
-
+if(waitpid(pid, &status, 0) == -1){
+perror("waitpid failed");
+exit(EXIT_FAILURE);}
 if(WIFEXITED(status));
 
 posix_spawnattr_destroy(&attr);}
 else if(!strcmp(line, "cd")){
 if(argPtr - argv == 3){
-char arr[999] = "/";
-strcpy(arr + 1, argv[1]);
-chdir(arr);}
+
+
+chdir(argv[1]);}
 else{
 println("-rsh: cd: too many arguments");}}
 else if(!strcmp(line, "exit")){
