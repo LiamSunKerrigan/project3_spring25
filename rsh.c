@@ -148,28 +148,33 @@ continue;}
 line[strlen(line) - 1] = ' ';
 
 char *argv[20];
-
-for(char **argPtr = argv, *arg = line; *(*argPtr++ = arg); ++arg){
+char **argPtr = argv;
+for(char *arg = line; *(*argPtr++ = arg); ++arg){
 while(*arg != ' '){
 ++arg;}
 *arg = 0;}
-
+argPtr[-1] = 0;
 if(!(strcmp(line,"cp") && strcmp(line,"touch") && strcmp(line,"mkdir") && strcmp(line,"ls") && strcmp(line,"cat") && strcmp(line,"grep") && strcmp(line,"chmod") && strcmp(line,"diff"))){
 pid_t pid;
 posix_spawnattr_t attr;
 posix_spawnattr_init(&attr);
-if(posix_spawnp(&pid, *argv, NULL, &attr, argv, environ) != 0){
-perror("spawn failed");
-exit(EXIT_FAILURE);}
+if(posix_spawnp(&pid, *argv, NULL, &attr, argv, environ) != 0);
+
+
 int status;
-if(waitpid(pid, &status, 0) == -1){
-perror("waitpid failed");
-exit(EXIT_FAILURE);}
+if(waitpid(pid, &status, 0) == -1);
+
+
 if(WIFEXITED(status));
 
 posix_spawnattr_destroy(&attr);}
 else if(!strcmp(line, "cd")){
-chdir(argv[1]);}
+if(argPtr - argv == 3){
+char arr[999] = "/";
+strcpy(arr + 1, argv[1]);
+chdir(arr);}
+else{
+println("-rsh: cd: too many arguments");}}
 else if(!strcmp(line, "exit")){
 return 0;}
 else if(!strcmp(line, "help")){
